@@ -20,8 +20,8 @@ def on_message(channel, method_frame, header_frame, body):
         logging.exception("Can't convert body to json: "+str(sys.exc_info()[0]))
     channel.basic_ack(delivery_tag=method_frame.delivery_tag)
 
-def signal_handler(signal, frame):
-    print "\nInterrupted with: "+str(signal)+", exit now!"
+def signal_handler(sig, frame):
+    logging.info("Interrupted with: "+str(sig)+", exit now!")
     channel.stop_consuming()
     connection.close()
     sys.exit(0)
