@@ -21,8 +21,8 @@ CMD_CREATE_APP = "elastic-beanstalk-create-application-version -j -c"
 #false                        |        | samplepdfapp    | samplepdfapp-env.elasticbeanstalk.com | Sat Mar 21 22:58:43 +0300 2015 | Mon Mar 23 16:25:21 +0300 2015 | N/A         | 107.20.239.203 | e-krxppb6mw6  | samplepdfapp-env | Green  | N/A          | 64bit Amazon Linux 2014.09 v1.2.0 running Docker 1.3.3 | Ready  | N/A          | WebServer::Standard::  | samplepdf.Dockerfile
 
 CMD_CREATE_ENV = "elastic-beanstalk-create-environment -j -s '64bit Amazon Linux 2014.09 v1.2.0 running Docker 1.3.3' "
-#elastic-beanstalk-create-environment -j -s '64bit Amazon Linux 2014.09 v1.2.0 running Docker 1.3.3' -a samplepdfapp -e samplepdfapp-env -c samplepdfapp-env -f env.json
-#{"CreateEnvironmentResponse":{"CreateEnvironmentResult":{"AbortableOperationInProgress":null,"Alerts":null,"ApplicationName":"samplepdfapp","CNAME":null,"DateCreated":1.427205292936E9,"DateUpdated":1.427205292936E9,"Description":null,"EndpointURL":null,"EnvironmentId":"e-br3cu4t3gv","EnvironmentName":"samplepdfapp-env","Health":"Grey","HealthStatus":null,"Resources":null,"SolutionStackName":"64bit Amazon Linux 2014.09 v1.2.0 running Docker 1.3.3","Status":"Launching","TemplateName":null,"Tier":{"Name":"WebServer","Type":"Standard","Version":" "},"VersionLabel":null},"ResponseMetadata":{"RequestId":"cae72f60-f009-4d11-8e1a-5f699abf01a3"}}}
+#elastic-beanstalk-create-environment -j -s '64bit Amazon Linux 2014.09 v1.2.0 running Docker 1.3.3' -a samplepdfapp -e samplepdfapp-env -c samplepdfapp-env -f env.json -l samplepdfapp.Docker
+#{"CreateEnvironmentResponse":{"CreateEnvironmentResult":{"AbortableOperationInProgress":null,"Alerts":null,"ApplicationName":"samplepdfapp","CNAME":"samplepdfapp-env.elasticbeanstalk.com","DateCreated":1.427206057439E9,"DateUpdated":1.427206057439E9,"Description":null,"EndpointURL":null,"EnvironmentId":"e-ycgxfs5cay","EnvironmentName":"samplepdfapp-env","Health":"Grey","HealthStatus":null,"Resources":null,"SolutionStackName":"64bit Amazon Linux 2014.09 v1.2.0 running Docker 1.3.3","Status":"Launching","TemplateName":null,"Tier":{"Name":"WebServer","Type":"Standard","Version":" "},"VersionLabel":null},"ResponseMetadata":{"RequestId":"c933084a-82d3-46a8-b97c-ad0d246267e1"}}}
 
 S3_SOURCE = "dreyou.docker/samplepdf/Dockerfile"
 
@@ -37,6 +37,9 @@ CREATE_ENV_OPTS = """
   {"Namespace": "aws:autoscaling:launchconfiguration",
    "OptionName": "InstanceType",
    "Value": "t1.micro"},
+  {"Namespace": "aws:autoscaling:launchconfiguration",
+   "OptionName": "IamInstanceProfile",
+   "Value": "aws-elasticbeanstalk-ec2-role"},
   {"Namespace": "aws:elasticbeanstalk:environment",
    "OptionName": "EnvironmentType",
    "Value": "SingleInstance"}
