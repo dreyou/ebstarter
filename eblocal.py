@@ -6,6 +6,7 @@ import sys
 import unittest
 import os
 import tempfile
+import time
 from mock import Mock
 
 CMD_ENVS = "elastic-beanstalk-describe-environments -j"
@@ -183,6 +184,19 @@ def getEnvStatus(name=""):
         return str(env['Status']), str(env['Health'])
     return None, None
 
+def getEnvAge(name=""):
+    env = getEnv(name)
+    if env is None:
+        return None
+    now = time.time()
+    try:
+        diff = now - env["DateUpdated"]
+        hours, rest = divmod(diff, 3600)
+        return hours
+    except:
+        logging.exception("Can't calculate environment age: "+str(sys.exc_info()[0]))
+        return None
+
 def getEnv(name=""):
     all = getEbEnvs()
     if all is None:
@@ -311,6 +325,17 @@ class EbLocalTestCase(unittest.TestCase):
         sys.modules[__name__].runCmd = lambda c:  self.mock_cmd(c)
         res = createApp("samplepdfapp", "dreyou.docker/samplepdf/Dockerfile")
         self.assertEqual(res, None)
+
+    def test_timeOfEnv(self):
+        sys.modules[__name__].runCmd = lambda c:  self.mock_cmd(c)
+        res = getEnv("samplepdfapp")
+        self.assertNotEqual(res, None)
+        etime = time.ctime(res["DateUpdated"])
+        self.assertNotEqual(etime, None)
+        hours = getEnvAge("samplepdfapp")
+        self.assertNotEqual(hours, None)
+        hours = getEnvAge("unknownapp")
+        self.assertEqual(hours, None)
 
 if __name__ == '__main__':
     unittest.main()
