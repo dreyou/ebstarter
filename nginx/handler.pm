@@ -13,6 +13,7 @@ END_HTML
 sub handler {
     my $r = shift;
     my $app = $r->variable('app');
+    my $src = $r->variable('src');
 
     $r->send_http_header("text/html");
     return OK if $r->header_only;
@@ -27,7 +28,7 @@ sub handler {
 
     my $err = "";
 
-    my $cmd = "$path/sendm.sh create $app";
+    my $cmd = "$path/sendm.sh create $app $src";
 
     exec($cmd) or $err = "couldn't $cmd foo: $!";
 

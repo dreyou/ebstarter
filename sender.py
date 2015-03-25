@@ -26,7 +26,8 @@ logging.info("Send data to queue: "+options.queue)
 connection = pika.BlockingConnection()
 
 channel = connection.channel()
-channel.queue_declare(queue=options.queue)
+channel.exchange_declare(exchange='commands', type='fanout')
+channel.queue_bind(exchange='commands', queue=options.queue)
 
 message = dict()
 message["name"] = options.name
@@ -37,8 +38,6 @@ message_json = json.dumps(message)
 
 logging.debug("Sending json: "+str(message_json))
 
-channel.basic_publish("",
-                      options.queue,
-                      message_json)
+channel.basic_publish("commands", "", message_json)
 
 connection.close()
