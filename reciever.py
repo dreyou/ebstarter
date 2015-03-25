@@ -21,6 +21,11 @@ def createApplication(command):
     logging.info("Application: "+command["name"]+" created")
 
 def rebuildApplicationEnvironment(command):
+    res = eblocal.getEnv(command["name"])
+    if res is None:
+        logging.error("No application environment present, creating")
+        createApplication(command)
+        return
     res = eblocal.rebuildEnv(command["name"])
     if res is None:
         logging.error("Can't rebuild environment")
