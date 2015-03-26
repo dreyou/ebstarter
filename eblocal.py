@@ -334,6 +334,7 @@ class EbLocalTestCase(unittest.TestCase):
         self.assertNotEqual(etime, None)
         hours = getEnvAge("samplepdfapp")
         self.assertNotEqual(hours, None)
+        self.assertTrue(hours > 24)
         hours = getEnvAge("unknownapp")
         self.assertEqual(hours, None)
 

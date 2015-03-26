@@ -5,7 +5,7 @@ use nginx;
 my $html = <<'END_HTML';
 
 <h1>Service was stopped!</h1>
-<p>Please come back after 2-3 minutes, when service will be ready.</p>
+<p>Please come back after 5-10 minutes, when service will be ready.</p>
 
 END_HTML
 
@@ -28,9 +28,9 @@ sub handler {
 
     my $err = "";
 
-    my $cmd = "$path/sendm.sh create $app $src";
+    my $cmd = "$path/sender.py -o create -a $app -s $src";
 
-    exec($cmd) or $err = "couldn't $cmd foo: $!";
+    exec($cmd) or $err = "Couldn't run $cmd: $!";
 
     return OK;
 }

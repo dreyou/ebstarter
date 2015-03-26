@@ -7,7 +7,6 @@ import logging
 from optparse import OptionParser
 import eblocal
 
-
 def createApplication(command):
     res = eblocal.createApp(command["name"], command["source"])
     if res is None:
@@ -35,10 +34,23 @@ def deleteApplication(command):
     if res is None:
         logging.error("Can't delete application")
 
+def deleteAgedApplication(command):
+    age = eblocal.getEnvAge(command["name"])
+    if age is None:
+        logging.error("Can't detect environment age")
+        return
+    if age < options.max_age:
+        return
+    logging.info("Environment age > "+str(options.max_age)+" hrs, deleting.")
+    res = eblocal.deleteApp(command["name"])
+    if res is None:
+        logging.error("Can't delete application")
+
 operations = dict()
 operations['create'] = createApplication
 operations['rebuild'] = rebuildApplicationEnvironment
 operations['delete'] = deleteApplication
+operations['deleteaged'] = deleteAgedApplication
 
 def on_message(channel, method_frame, header_frame, body):
     logging.debug(method_frame.delivery_tag)
@@ -68,6 +80,7 @@ parser = OptionParser()
 parser.add_option("-r", "--run", type="string", help="if not set to \"yes\", do really nothing, just accept messages", dest="run", default="no")
 parser.add_option("-q", "--queue", help="queue name", type="string", dest="queue", default="test")
 parser.add_option("-l", "--log-level", help="log level", dest="log_level", type="int", default=1)
+parser.add_option("-m", "--max-age", help="maximum application age in hours", dest="max_age", type="int", default=6)
 
 (options, args) = parser.parse_args()
 

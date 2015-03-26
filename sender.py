@@ -7,7 +7,7 @@ import logging
 parser = OptionParser()
 
 parser.add_option("-a", "--application", help="application name", type="string", dest="name", default="")
-parser.add_option("-o", "--operation", help="operation create|rebuild|delete", type="string", dest="operation", default="")
+parser.add_option("-o", "--operation", help="operation create|rebuild|delete|deleteaged", type="string", dest="operation", default="")
 parser.add_option("-s", "--source", help="s3 source url", type="string", dest="source", default="")
 parser.add_option("-q", "--queue", help="queue name", type="string", dest="queue", default="test")
 parser.add_option("-l", "--log-level", help="log level", dest="log_level", type="int", default=1)

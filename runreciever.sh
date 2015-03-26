@@ -26,8 +26,6 @@ fi
 
 . $AWSENV &>/dev/null
 
-echo $RUN
-
 $CPATH/reciever.py $RUN
 
 exit 0
