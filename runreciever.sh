@@ -6,6 +6,8 @@ popd > /dev/null
 
 RUN=$1
 
+cd $CPATH
+
 if [ -z "$AWSENV" ]
 then
     AWSENV=$CPATH/.aws/aws_env
