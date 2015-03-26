@@ -1,0 +1,12 @@
+
+module ebstarter 1.0;
+
+require {
+        type httpd_t;
+        type amqp_port_t;
+        class tcp_socket name_connect;
+}
+
+#============= httpd_t ==============
+
+allow httpd_t amqp_port_t:tcp_socket name_connect;
