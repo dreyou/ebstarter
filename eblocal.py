@@ -12,23 +12,12 @@ from mock import Mock
 CMD_ENVS = "elastic-beanstalk-describe-environments -j"
 CMD_APPS = "elastic-beanstalk-describe-applications -j"
 CMD_REBUILD = "elastic-beanstalk-rebuild-environment -j"
-CMD_DELETE = "elastic-beanstalk-delete-application -j -f"
 #elastic-beanstalk-delete-application -j -f -a samplepdfapp
-#{"DeleteApplicationResponse":{"ResponseMetadata":{"RequestId":"8f004d68-33f2-43b7-b930-679566f7cd15"}}}
-
-CMD_CREATE_APP = "elastic-beanstalk-create-application-version -j -c"
+CMD_DELETE = "elastic-beanstalk-delete-application -j -f"
 #elastic-beanstalk-create-application-version -j -c -a samplepdfapp -s dreyou.docker/samplepdf/Dockerfile -l samplepdfapp.Docker
-#{"CreateApplicationVersionResponse":{"CreateApplicationVersionResult":{"ApplicationVersion":{"ApplicationName":"samplepdfapp","DateCreated":1.427205143742E9,"DateUpdated":1.427205143742E9,"Description":null,"SourceBundle":{"S3Bucket":"dreyou.docker","S3Key":"samplepdf/Dockerfile"},"VersionLabel":"samplepdfapp.Docker"}},"ResponseMetadata":{"RequestId":"d52bb9d7-5b57-4903-b32d-f349b9247fd1"}}}
-
-#AbortableOperationInProgress | Alerts | ApplicationName | CNAME                                 | DateCreated                    | DateUpdated                    | Description | EndpointURL    | EnvironmentId | EnvironmentName  | Health | HealthStatus | SolutionStackName                                      | Status | TemplateName | Tier                   | VersionLabel
-#---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-#false                        |        | samplepdfapp    | samplepdfapp-env.elasticbeanstalk.com | Sat Mar 21 22:58:43 +0300 2015 | Mon Mar 23 16:25:21 +0300 2015 | N/A         | 107.20.239.203 | e-krxppb6mw6  | samplepdfapp-env | Green  | N/A          | 64bit Amazon Linux 2014.09 v1.2.0 running Docker 1.3.3 | Ready  | N/A          | WebServer::Standard::  | samplepdf.Dockerfile
-
-CMD_CREATE_ENV = "elastic-beanstalk-create-environment -j -s '64bit Amazon Linux 2014.09 v1.2.0 running Docker 1.3.3' "
+CMD_CREATE_APP = "elastic-beanstalk-create-application-version -j -c"
 #elastic-beanstalk-create-environment -j -s '64bit Amazon Linux 2014.09 v1.2.0 running Docker 1.3.3' -a samplepdfapp -e samplepdfapp-env -c samplepdfapp-env -f env.json -l samplepdfapp.Docker
-#{"CreateEnvironmentResponse":{"CreateEnvironmentResult":{"AbortableOperationInProgress":null,"Alerts":null,"ApplicationName":"samplepdfapp","CNAME":"samplepdfapp-env.elasticbeanstalk.com","DateCreated":1.427206057439E9,"DateUpdated":1.427206057439E9,"Description":null,"EndpointURL":null,"EnvironmentId":"e-ycgxfs5cay","EnvironmentName":"samplepdfapp-env","Health":"Grey","HealthStatus":null,"Resources":null,"SolutionStackName":"64bit Amazon Linux 2014.09 v1.2.0 running Docker 1.3.3","Status":"Launching","TemplateName":null,"Tier":{"Name":"WebServer","Type":"Standard","Version":" "},"VersionLabel":null},"ResponseMetadata":{"RequestId":"c933084a-82d3-46a8-b97c-ad0d246267e1"}}}
-
-S3_SOURCE = "dreyou.docker/samplepdf/Dockerfile"
+CMD_CREATE_ENV = "elastic-beanstalk-create-environment -j -s '64bit Amazon Linux 2014.09 v1.2.0 running Docker 1.3.3' "
 
 CREATE_ENV_OPTS = """
 [
@@ -257,7 +246,7 @@ class EbLocalTestCase(unittest.TestCase):
         self.assertEqual(res, "abc")
 
     def test_getEbEnvs(self):
-        sys.modules[__name__].runCmd = lambda c: self.mock_cmd(c)
+        sys.modules[__name__].runCmd = self.mock_cmd
         data = getEbEnvs()
         self.assertNotEqual(data, None)
         envs = data['DescribeEnvironmentsResponse']['DescribeEnvironmentsResult']['Environments']
@@ -266,18 +255,18 @@ class EbLocalTestCase(unittest.TestCase):
         self.assertNotEqual(envs[0]['ApplicationName'], None)
 
     def test_getEnv(self):
-        sys.modules[__name__].runCmd = lambda c: self.mock_cmd(c)
+        sys.modules[__name__].runCmd = self.mock_cmd
         self.assertNotEqual(getEnv("samplepdfapp"), None)
         self.assertEqual(getEnv("samplepdfapp")['ApplicationName'], "samplepdfapp")
         self.assertEqual(getEnv("samplepdfapp")["EnvironmentName"], "samplepdfapp-env")
 
     def test_getEnvStatus(self):
-        sys.modules[__name__].runCmd = lambda c:  self.mock_cmd(c)
+        sys.modules[__name__].runCmd = self.mock_cmd
         self.assertEqual(getEnvStatus("samplepdfapp"), ("Ready", "Green"))
         self.assertEqual(getEnvStatus("unknownapp"), (None, None))
 
     def test_getEbApps(self):
-        sys.modules[__name__].runCmd = lambda c:  self.mock_cmd(c)
+        sys.modules[__name__].runCmd = self.mock_cmd
         data = getEbApps()
         self.assertNotEqual(data, None)
         apps = data['DescribeApplicationsResponse']['DescribeApplicationsResult']['Applications']
@@ -294,7 +283,7 @@ class EbLocalTestCase(unittest.TestCase):
         self.assertTrue(isError(obj))
 
     def test_rebuildEnv(self):
-        sys.modules[__name__].runCmd = lambda c:  self.mock_cmd(c)
+        sys.modules[__name__].runCmd = self.mock_cmd
         res = rebuildEnv("samplepdfapp")
         self.assertNotEqual(res, None)
         self.assertTrue("RebuildEnvironmentResponse" in res)
@@ -303,7 +292,7 @@ class EbLocalTestCase(unittest.TestCase):
         self.assertEqual(res, None)
 
     def test_deleteApp(self):
-        sys.modules[__name__].runCmd = lambda c:  self.mock_cmd(c)
+        sys.modules[__name__].runCmd = self.mock_cmd
         res = deleteApp("samplepdfapp")
         self.assertNotEqual(res, None)
         self.assertTrue("DeleteApplicationResponse" in res)
@@ -312,7 +301,7 @@ class EbLocalTestCase(unittest.TestCase):
         self.assertEqual(res, None)
 
     def test_createApp(self):
-        sys.modules[__name__].runCmd = lambda c:  self.mock_cmd(c)
+        sys.modules[__name__].runCmd = self.mock_cmd
         self.mock_res_add = "0"
         res = createApp("samplepdfapp", "dreyou.docker/samplepdf/Dockerfile")
         self.assertNotEqual(res, None)
@@ -322,12 +311,12 @@ class EbLocalTestCase(unittest.TestCase):
         self.assertTrue("CreateEnvironmentResponse" in res)
 
     def test_notCreateApp(self):
-        sys.modules[__name__].runCmd = lambda c:  self.mock_cmd(c)
+        sys.modules[__name__].runCmd = self.mock_cmd
         res = createApp("samplepdfapp", "dreyou.docker/samplepdf/Dockerfile")
         self.assertEqual(res, None)
 
     def test_timeOfEnv(self):
-        sys.modules[__name__].runCmd = lambda c:  self.mock_cmd(c)
+        sys.modules[__name__].runCmd = self.mock_cmd
         res = getEnv("samplepdfapp")
         self.assertNotEqual(res, None)
         etime = time.ctime(res["DateUpdated"])
