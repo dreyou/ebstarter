@@ -17,4 +17,4 @@ Required rpm packages:
 
 SELinux notes:
 
- TODO: add instruction
+ Run packaging/selinux/build_module.sh and install it
