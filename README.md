@@ -6,6 +6,15 @@ Used RabbitMQ to process application commands such as create/rebuild/delete/dele
 Contains sample nginx virtual host configuration file and perl handler to run application on demand
 
 Required rpm packages:
+
  rabbitmq-server
+
  python-pika
+
  python-demjson
+
+ python-mock
+
+SELinux notes:
+
+ TODO: add instruction
