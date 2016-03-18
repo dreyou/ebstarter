@@ -17,7 +17,7 @@ CMD_DELETE = "elastic-beanstalk-delete-application -j -f"
 #elastic-beanstalk-create-application-version -j -c -a samplepdfapp -s dreyou.docker/samplepdf/Dockerfile -l samplepdfapp.Docker
 CMD_CREATE_APP = "elastic-beanstalk-create-application-version -j -c"
 #elastic-beanstalk-create-environment -j -s '64bit Amazon Linux 2014.09 v1.2.0 running Docker 1.3.3' -a samplepdfapp -e samplepdfapp-env -c samplepdfapp-env -f env.json -l samplepdfapp.Docker
-CMD_CREATE_ENV = "elastic-beanstalk-create-environment -j -s '64bit Amazon Linux 2014.09 v1.2.0 running Docker 1.3.3' "
+CMD_CREATE_ENV = "elastic-beanstalk-create-environment -j -s '64bit Amazon Linux 2015.09 v2.0.8 running Docker 1.9.1' "
 
 CREATE_ENV_OPTS = """
 [
